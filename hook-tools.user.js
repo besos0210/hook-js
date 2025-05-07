@@ -103,6 +103,10 @@
         #hook-toggle-panel:hover {
             background: #45a049;
         }
+        #hook-toggle-panel.dragging {
+            cursor: move;
+            opacity: 0.8;
+        }
     `);
 
     // Hook功能配置
@@ -584,6 +588,33 @@
         toggleBtn.id = 'hook-toggle-panel';
         toggleBtn.textContent = '显示Hook工具';
         document.body.appendChild(toggleBtn);
+
+        // 添加拖动功能
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        toggleBtn.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - toggleBtn.getBoundingClientRect().left;
+            offsetY = e.clientY - toggleBtn.getBoundingClientRect().top;
+            toggleBtn.classList.add('dragging');
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                toggleBtn.style.left = `${e.clientX - offsetX}px`;
+                toggleBtn.style.top = `${e.clientY - offsetY}px`;
+                toggleBtn.style.right = 'auto';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                toggleBtn.classList.remove('dragging');
+            }
+        });
 
         // 创建控制面板
         const panel = document.createElement('div');
